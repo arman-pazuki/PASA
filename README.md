@@ -1,12 +1,14 @@
 # PASA · Photosynthetic Absorbance Spectra Analyzer
 
+**[Open PASA — use it online](https://armanpazuki.shinyapps.io/pasa/)** · No installation needed.
+
 ![PASA welcome scene: light source, filter, green sample cuvette, detector and spectrum display](docs/assets/pasa-welcome-banner.png)
 
 **Version 1.0.0** — an interactive R/Shiny workspace for exploring absorbance spectra, comparing samples, and recording reproducible analysis settings.
 
 Load your spectra, choose the analysis settings, and explore spectral curves, band measurements, data quality, illustrative sample colors, and cell growth. Advanced mode adds constrained spectral deconvolution. Short and detailed guided tours introduce the controls and explain how to interpret the outputs.
 
-## Run PASA
+## Run PASA locally
 
 Install **R 4.6.0**, then download this repository or clone it:
 
@@ -24,7 +26,7 @@ The repository contains the application, interface artwork, color reference tabl
 
 ## Try an example
 
-Choose **Open PASA → Input data → Load example data**, or upload [the synthetic workbook](examples/EXAMPLE_SYNTHETIC_SPECTRA.xlsx). The first column contains wavelength in nm; each remaining column contains one sample. CSV, TSV, text, and Excel files are supported.
+Choose **Open PASA → Input data → Demo data → Load demo data**, or upload [the synthetic workbook](examples/EXAMPLE_SYNTHETIC_SPECTRA.xlsx). The first column contains wavelength in nm; each remaining column contains one sample. CSV, TSV, text, and Excel files are supported.
 
 Analysis settings have their own tab. Visit **Summary** to review the settings, then inspect **Spectra**, **Metrics**, **Band AUC**, **Data Quality**, **Sample Color**, or **Cell Growth**. Save a session to preserve data and settings together, or export the resulting tables and plots.
 

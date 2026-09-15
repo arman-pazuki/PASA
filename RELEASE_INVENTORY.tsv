@@ -25,11 +25,11 @@ privacy_network/DATA_RETENTION_AND_EXPORTS.md	4743	documentation, artwork, examp
 privacy_network/PRIVACY_AND_NETWORK_STATEMENT.md	8987	documentation, artwork, example or metadata	Author CC-BY-4.0 scope; see LICENSE.md
 privacy_network/README.md	1067	documentation, artwork, example or metadata	Author CC-BY-4.0 scope; see LICENSE.md
 privacy_network/URL_LOADING.md	2721	documentation, artwork, example or metadata	Author CC-BY-4.0 scope; see LICENSE.md
-README.md	3446	documentation, artwork, example or metadata	Author CC-BY-4.0 scope; see LICENSE.md
-RELEASE_VERIFICATION.md	2021	documentation, artwork, example or metadata	Author CC-BY-4.0 scope; see LICENSE.md
+README.md	3567	documentation, artwork, example or metadata	Author CC-BY-4.0 scope; see LICENSE.md
+RELEASE_VERIFICATION.md	5624	documentation, artwork, example or metadata	Author CC-BY-4.0 scope; see LICENSE.md
 reproducibility/BUILD_DEFAULTS_AND_LIMITS.R	31666	author-created software/configuration	MIT
 reproducibility/FREEZE_SOURCE_CHECKSUMS.R	2186	author-created software/configuration	MIT
-reproducibility/HOSTED_DEPLOYMENT.md	1317	documentation, artwork, example or metadata	Author CC-BY-4.0 scope; see LICENSE.md
+reproducibility/HOSTED_DEPLOYMENT.md	5431	documentation, artwork, example or metadata	Author CC-BY-4.0 scope; see LICENSE.md
 reproducibility/INSTALL_DEPENDENCIES.R	3888	author-created software/configuration	MIT
 reproducibility/INSTALLATION.md	2153	documentation, artwork, example or metadata	Author CC-BY-4.0 scope; see LICENSE.md
 reproducibility/LAUNCH_INSTRUCTIONS.md	751	documentation, artwork, example or metadata	Author CC-BY-4.0 scope; see LICENSE.md
@@ -40,6 +40,7 @@ reproducibility/R_PACKAGE_REQUIREMENTS.md	10509	documentation, artwork, example 
 reproducibility/README.md	782	documentation, artwork, example or metadata	Author CC-BY-4.0 scope; see LICENSE.md
 reproducibility/renv.lock	24451	dependency metadata	Upstream notices
 reproducibility/RUN_PASA.R	2853	author-created software/configuration	MIT
+reproducibility/SHINY_MANIFEST.json	389992	documentation, artwork, example or metadata	Author CC-BY-4.0 scope; see LICENSE.md
 reproducibility/SOURCE_CHECKSUMS.tsv	4523	documentation, artwork, example or metadata	Author CC-BY-4.0 scope; see LICENSE.md
 reproducibility/VERIFY_ENVIRONMENT.R	6249	author-created software/configuration	MIT
 SECURITY.md	1255	documentation, artwork, example or metadata	Author CC-BY-4.0 scope; see LICENSE.md
