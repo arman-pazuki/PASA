@@ -1,6 +1,6 @@
 path	bytes	component	license_scope
 .gitattributes	325	author-created software/configuration	MIT
-.github/workflows/release-checks.yml	6031	author-created software/configuration	MIT
+.github/workflows/release-checks.yml	7106	author-created software/configuration	MIT
 .gitignore	251	author-created software/configuration	MIT
 CHANGELOG.md	917	documentation, artwork, example or metadata	Author CC-BY-4.0 scope; see LICENSE.md
 CITATION.cff	1007	documentation, artwork, example or metadata	Author CC-BY-4.0 scope; see LICENSE.md
@@ -31,12 +31,12 @@ reproducibility/BUILD_DEFAULTS_AND_LIMITS.R	31666	author-created software/config
 reproducibility/FREEZE_SOURCE_CHECKSUMS.R	2186	author-created software/configuration	MIT
 reproducibility/HOSTED_DEPLOYMENT.md	1317	documentation, artwork, example or metadata	Author CC-BY-4.0 scope; see LICENSE.md
 reproducibility/INSTALL_DEPENDENCIES.R	3888	author-created software/configuration	MIT
-reproducibility/INSTALLATION.md	2048	documentation, artwork, example or metadata	Author CC-BY-4.0 scope; see LICENSE.md
+reproducibility/INSTALLATION.md	2153	documentation, artwork, example or metadata	Author CC-BY-4.0 scope; see LICENSE.md
 reproducibility/LAUNCH_INSTRUCTIONS.md	751	documentation, artwork, example or metadata	Author CC-BY-4.0 scope; see LICENSE.md
 reproducibility/LAUNCH_PASA.ps1	2239	author-created software/configuration	MIT
 reproducibility/LOAD_LOCKED_ENVIRONMENT.R	6175	author-created software/configuration	MIT
 reproducibility/PASA_DEFAULTS_AND_LIMITS.tsv	40974	documentation, artwork, example or metadata	Author CC-BY-4.0 scope; see LICENSE.md
-reproducibility/R_PACKAGE_REQUIREMENTS.md	9258	documentation, artwork, example or metadata	Author CC-BY-4.0 scope; see LICENSE.md
+reproducibility/R_PACKAGE_REQUIREMENTS.md	10509	documentation, artwork, example or metadata	Author CC-BY-4.0 scope; see LICENSE.md
 reproducibility/README.md	782	documentation, artwork, example or metadata	Author CC-BY-4.0 scope; see LICENSE.md
 reproducibility/renv.lock	24451	dependency metadata	Upstream notices
 reproducibility/RUN_PASA.R	2853	author-created software/configuration	MIT
@@ -48,7 +48,7 @@ source_snapshot/data/CIE_1931_2deg_380_780_10nm.csv	1057	adapted CIE table	CC-BY
 source_snapshot/data/CIE_D65_380_780_10nm.csv	450	adapted CIE table	CC-BY-SA-4.0
 source_snapshot/data/CIE_DATA_NOTICE.md	4628	documentation, artwork, example or metadata	Author CC-BY-4.0 scope; see LICENSE.md
 source_snapshot/deconvolution_module.R	74999	author-created software/configuration	MIT
-source_snapshot/PASA.R	1367009	author-created software/configuration	MIT
+source_snapshot/PASA.R	1368057	author-created software/configuration	MIT
 source_snapshot/pasa_cuvettes.R	6897	author-created software/configuration	MIT
 source_snapshot/pasa_io.R	7231	author-created software/configuration	MIT
 source_snapshot/pasa_onboarding.R	9020	author-created software/configuration	MIT
@@ -82,4 +82,4 @@ THIRD_PARTY_NOTICES.md	3461	documentation, artwork, example or metadata	Author C
 validation/release/browser/package-lock.json	1761	dependency metadata	Upstream notices
 validation/release/browser/package.json	218	documentation, artwork, example or metadata	Author CC-BY-4.0 scope; see LICENSE.md
 validation/release/browser/smoke.cjs	8371	author-created software/configuration	MIT
-validation/release/SMOKE_RELEASE.R	13753	author-created software/configuration	MIT
+validation/release/SMOKE_RELEASE.R	16575	author-created software/configuration	MIT

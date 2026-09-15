@@ -151,6 +151,49 @@ main <- function() {
     check("Cairo PDF export produces a PDF", identical(readBin(pdf, "raw", n = 4L), charToRaw("%PDF")) &&
             file.info(pdf)$size > 1000)
 
+    # Native Cairo may warn without opening a device even when capabilities()
+    # reports TRUE. Inject that behavior without altering installed namespaces.
+    local({
+      guard_dir <- file.path(output_dir, "cairo-device-guard")
+      dir.create(guard_dir, showWarnings = FALSE)
+      prior_wd <- getwd(); setwd(guard_dir)
+      on.exit(setwd(prior_wd), add = TRUE)
+      original_ids <- unname(grDevices::dev.list())
+      on.exit({
+        for (id in setdiff(unname(grDevices::dev.list()), original_ids))
+          try(grDevices::dev.off(which = id), silent = TRUE)
+      }, add = TRUE)
+      grDevices::pdf("existing-user-device.pdf")
+      user_device <- unname(grDevices::dev.cur())
+      user_ids <- unname(grDevices::dev.list())
+      unchanged <- function() identical(unname(grDevices::dev.list()), user_ids) &&
+        identical(unname(grDevices::dev.cur()), user_device) && !file.exists("Rplots.pdf")
+      native_warning <- function(...) warning("simulated native Cairo library load failure")
+      warned <- tryCatch(app$.pasa_open_pdf("warning.pdf", .device = native_warning), error = identity)
+      check("Cairo warning without a device is refused without closing existing devices",
+        inherits(warned, "error") && grepl("native Cairo library", conditionMessage(warned)) && unchanged())
+      silent <- tryCatch(app$.pasa_open_pdf("silent.pdf", .device = function(...) invisible(NULL)), error = identity)
+      check("Cairo silent no-device return is refused", inherits(silent, "error") &&
+        grepl("did not open", conditionMessage(silent)) && unchanged())
+      partial <- tryCatch(app$.pasa_open_pdf("partial.pdf", .device = function(filename, ...) {
+        grDevices::pdf(filename)
+        warning("simulated warning after partial device initialization")
+      }), error = identity)
+      check("Failed PDF initialization closes only its newly opened device",
+        inherits(partial, "error") && unchanged())
+      p <- ggplot2::ggplot(data.frame(x = 1:3, y = c(1, 3, 2)), ggplot2::aes(x, y)) +
+        ggplot2::geom_line() + ggplot2::labs(x = "Wavelength λ", y = "Apparent rate μ")
+      wrapped_warning <- tryCatch(ggplot2::ggsave("ggsave-warning.pdf", plot = p,
+        device = app$.pasa_pdf_device, width = 5, height = 4, bg = "white", .device = native_warning), error = identity)
+      check("ggsave uses the guarded PDF device and preserves the existing device on failure",
+        inherits(wrapped_warning, "error") && unchanged())
+      ggplot2::ggsave("guarded-plot.pdf", plot = p, device = app$.pasa_pdf_device,
+        width = 5, height = 4, bg = "white")
+      check("Guarded ggsave produces a Unicode Cairo PDF",
+        identical(readBin("guarded-plot.pdf", "raw", n = 4L), charToRaw("%PDF")) &&
+        file.info("guarded-plot.pdf")$size > 1000 && unchanged())
+    })
+
     growth <- do.call(rbind, lapply(1:3, function(i) data.frame(
       Time = 0:6, Replicate = paste0("R", i), OD = (.04 + .01 * i) * exp(.3 * (0:6)))))
     gr <- app$analyze_growth(growth)

@@ -48,7 +48,7 @@ These requirements come from the installed packages' DESCRIPTION SystemRequireme
 | OpenSSL >= 1.0.2 | openssl and websocket. |
 | libxml2 | xml2; optionally igraph. |
 | Fontconfig and FreeType | systemfonts and font discovery. Install usable fonts, including needed scientific/CJK glyphs. |
-| Cairo plus PNG/JPEG-capable R graphics | Unicode PDF and PNG exports. The R build must report the relevant graphics capabilities; source-package installation alone cannot add a missing R graphics device. |
+| Cairo plus PNG/JPEG-capable R graphics; XQuartz on macOS | Unicode PDF and PNG exports. An actual graphics-device test must succeed; a true capabilities("cairo") flag alone does not establish that its shared libraries can load. |
 | Poppler C++ API | pdftools. On Debian/Ubuntu this is libpoppler-cpp-dev, not only the command-line Poppler utilities. |
 | libjpeg | qpdf's bundled native code; also JPEG graphics support. |
 | zlib | httpuv and writexl; usually supplied by the OS/toolchain. |
@@ -62,6 +62,20 @@ These requirements come from the installed packages' DESCRIPTION SystemRequireme
 | Pandoc >= 1.14 | rmarkdown document conversion when used. The ordinary app UI and base-grid PDF exports do not require a TeX installation. |
 
 A suitable Ubuntu 24.04 source-build set is: build-essential, gfortran, cmake, pkg-config, libcurl4-openssl-dev, libssl-dev, libxml2-dev, libfontconfig1-dev, libfreetype6-dev, libcairo2-dev, libpng-dev, libjpeg-dev, libpoppler-cpp-dev, zlib1g-dev, libuv1-dev, libicu-dev, libglpk-dev and libnode-dev, plus CA certificates and appropriate fonts. Browser capture additionally needs Chrome/Chromium. The CI restore and smoke tests are the acceptance check for the exact locked package set.
+
+### macOS graphics runtime
+
+Install XQuartz before using the CRAN macOS R build for PASA PDF exports. In the release CI, R reported Cairo support while loading the Cairo device failed because `/opt/X11/lib/libSM.6.dylib` and `/opt/X11/lib/libXrender.1.dylib` were absent. XQuartz supplies these X11 libraries. Installing R packages does not repair a missing graphics runtime.
+
+```sh
+brew install --cask xquartz
+test -r /opt/X11/lib/libSM.6.dylib
+test -r /opt/X11/lib/libXrender.1.dylib
+```
+
+Alternatively use the installer from [XQuartz](https://www.xquartz.org/). Follow its installer instructions, then start a new R process. [CRAN's macOS guidance](https://cran.r-project.org/bin/macosx/) requires XQuartz for X11 support and recommends reinstalling it after a major macOS upgrade. The command above is the [official Homebrew XQuartz cask](https://formulae.brew.sh/cask/xquartz).
+
+Before restoring packages, release CI opens a Cairo PDF, renders Greek text, closes the device, and verifies the generated PDF header. It treats device warnings as failures, so a missing shared library cannot pass merely because `capabilities("cairo")` is true. This file-based check does not open an X11 window or require a display session.
 
 ### macOS arm64 source builds
 

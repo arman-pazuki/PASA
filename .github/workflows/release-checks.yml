@@ -94,6 +94,13 @@ jobs:
             libxml2 openssl@3 curl icu4c glpk nlopt jpeg-turbo libpng libtiff gettext libuv
           printf 'PKG_CONFIG_PATH=%s\n' "$(brew --prefix)/lib/pkgconfig:$(brew --prefix freetype)/lib/pkgconfig:$(brew --prefix libxml2)/lib/pkgconfig:$(brew --prefix openssl@3)/lib/pkgconfig:$(brew --prefix curl)/lib/pkgconfig:$(brew --prefix icu4c)/lib/pkgconfig" >> "$GITHUB_ENV"
 
+      - name: Install macOS XQuartz graphics runtime
+        if: runner.os == 'macOS'
+        run: |
+          brew install --cask xquartz
+          test -r /opt/X11/lib/libSM.6.dylib
+          test -r /opt/X11/lib/libXrender.1.dylib
+
       - uses: r-lib/actions/setup-r@v2
         with:
           r-version: '4.6.0'
@@ -118,6 +125,22 @@ jobs:
           EXPECTED_OS: ${{ matrix.os }}
         run: |
           Rscript --vanilla -e 'stopifnot(getRversion() == "4.6.0", identical(unname(Sys.info()[["sysname"]]), Sys.getenv("EXPECTED_OS"))); if (Sys.getenv("EXPECTED_OS") == "Darwin") stopifnot(R.version$arch %in% c("aarch64", "arm64")) else stopifnot(R.version$arch == "x86_64"); print(R.version); print(capabilities()); stopifnot(capabilities("cairo"))' 2>&1 | tee .ci-results/r-platform.log
+
+      - name: Exercise the Cairo PDF runtime before package restoration
+        run: |
+          Rscript --vanilla - <<'RSCRIPT' 2>&1 | tee .ci-results/cairo-preflight.log
+          options(warn = 2)
+          stopifnot(getRversion() == "4.6.0", capabilities("cairo"))
+          output <- file.path(".ci-results", "cairo-preflight.pdf")
+          grDevices::cairo_pdf(output, width = 4, height = 3, family = "sans")
+          stopifnot(identical(names(grDevices::dev.cur()), "cairo_pdf"))
+          graphics::plot.new()
+          graphics::text(0.5, 0.5, "Wavelength \u03bb; rate \u03bc")
+          grDevices::dev.off()
+          stopifnot(file.exists(output), file.info(output)$size > 100,
+                    identical(rawToChar(readBin(output, "raw", n = 5)), "%PDF-"))
+          cat("CAIRO_RUNTIME_PREFLIGHT_PASS\n")
+          RSCRIPT
 
       # No renv cache is restored: every run verifies a fresh exact-lock install.
       - name: Restore the complete pinned dependency set

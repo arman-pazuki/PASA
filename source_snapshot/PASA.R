@@ -10229,14 +10229,34 @@ builtin_demo_data <- function() {
   trimws(formatC(v, format = "g", digits = digits, decimal.mark = "."))
 }
 
-.pasa_open_pdf <- function(file, width = 11, height = 8.5) {
+.pasa_open_pdf <- function(file, width = 11, height = 8.5, bg = "white", family = "sans",
+                           ..., .device = grDevices::cairo_pdf) {
   if (!isTRUE(capabilities("cairo")))
     stop("PDF export requires R with Cairo graphics support. Use CSV, Excel or PNG export, or install an R build with Cairo support.", call. = FALSE)
-  tryCatch(grDevices::cairo_pdf(filename = file, width = width, height = height,
-                                family = "sans"),
-           error = function(e) stop("Could not open the Unicode PDF device: ",
-                                     conditionMessage(e), call. = FALSE))
+  before <- unname(grDevices::dev.list())
+  previous <- unname(grDevices::dev.cur())
+  tryCatch({
+    # Native Cairo loading can warn and return without opening a device (for
+    # example when macOS XQuartz is unavailable), despite capabilities(cairo).
+    withCallingHandlers(.device(filename = file, width = width, height = height,
+                                bg = bg, family = family, ...),
+      warning = function(w) stop(conditionMessage(w), call. = FALSE))
+    opened <- setdiff(unname(grDevices::dev.list()), before)
+    if (length(opened) != 1L || !unname(grDevices::dev.cur()) %in% opened)
+      stop("Cairo did not open a new output device.", call. = FALSE)
+  }, error = function(e) {
+    # Do not close a user's already-open device when initialization fails.
+    opened <- setdiff(unname(grDevices::dev.list()), before)
+    for (id in rev(opened)) tryCatch(grDevices::dev.off(which = id), error = function(e) NULL)
+    if (previous %in% unname(grDevices::dev.list()))
+      tryCatch(grDevices::dev.set(which = previous), error = function(e) NULL)
+    stop("Could not open the Unicode PDF device: ", conditionMessage(e),
+         " Check the platform graphics dependencies, or use PNG/CSV export.", call. = FALSE)
+  })
   invisible(TRUE)
+}
+.pasa_pdf_device <- function(filename, width, height, bg = "white", ...) {
+  .pasa_open_pdf(file = filename, width = width, height = height, bg = bg, ...)
 }
 
 grid_table_pdf <- function(df, file, title = "", subtitle = "",
@@ -16416,10 +16436,8 @@ server <- function(input, output, session){
       is_cuvette_scene <- inherits(plot_obj,"ggplot") && any(vapply(plot_obj$layers,
         function(layer)inherits(layer$geom,"GeomPasaCuvetteRaster"),logical(1)))
       plot_obj_light <- if(is_cuvette_scene)plot_obj else plot_obj+theme_light_override+.preserve_blank_axes(plot_obj)
-      if(identical(fmt,"pdf")&&!isTRUE(capabilities("cairo")))
-        stop("PDF export requires Cairo graphics support; use PNG instead.",call.=FALSE)
       ggplot2::ggsave(filename=file,plot=plot_obj_light,
-        device=if(identical(fmt,"pdf"))grDevices::cairo_pdf else fmt,
+        device=if(identical(fmt,"pdf")) .pasa_pdf_device else fmt,
         width=width,height=height,dpi=300,units="in",bg=if(is_cuvette_scene)NULL else "white")
       invisible(TRUE)
     },error=function(e) {
