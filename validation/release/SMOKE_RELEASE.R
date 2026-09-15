@@ -48,6 +48,36 @@ main <- function() {
       PASA_PREFERENCES_DIR = file.path(output_dir, "preferences"), PASA_LAUNCH_BROWSER = "0",
       PASA_APP_DIR = source_dir)
     setwd(source_dir)
+    # R may report a loaded namespace as raw character "1.8-8", whereas
+    # packageVersion()/package_version() print "1.8.8". Exercise the actual
+    # desktop and hosted guard code without modifying installed namespaces.
+    invisible(loadNamespace("xtable"))
+    hosted_expr <- parse(file.path(source_dir, "app.R"), encoding = "UTF-8", keep.source = FALSE)
+    hosted_source_start <- which(vapply(hosted_expr, function(x) is.call(x) &&
+      identical(x[[1L]], as.name("<-")) && identical(x[[2L]], as.name("pasa_hosted_env")), logical(1)))
+    stopifnot(length(hosted_source_start) == 1L)
+    hosted_guards <- hosted_expr[seq_len(hosted_source_start - 1L)]
+    namespace_guards <- function(get_version) {
+      guard_env <- new.env(parent = environment(.pasa_check_locked_library))
+      guard_env$getNamespaceVersion <- get_version
+      loader_guard <- .pasa_check_locked_library
+      environment(loader_guard) <- guard_env
+      hosted_env <- new.env(parent = globalenv())
+      hosted_env$getNamespaceVersion <- get_version
+      list(
+        loader = tryCatch({ loader_guard(file.path(source_dir, "renv.lock"), .libPaths()[1L]); NULL }, error = identity),
+        hosted = tryCatch({ eval(hosted_guards, hosted_env); NULL }, error = identity))
+    }
+    check("Loaded xtable namespace is accepted by desktop and hosted guards",
+      all(vapply(namespace_guards(base::getNamespaceVersion), is.null, logical(1))))
+    equivalent_namespace <- function(package) if (identical(package, "xtable")) "1.8.8" else base::getNamespaceVersion(package)
+    check("Namespace hyphen and dot version forms are equivalent",
+      all(vapply(namespace_guards(equivalent_namespace), is.null, logical(1))))
+    different_namespace <- function(package) if (identical(package, "xtable")) "1.8-9" else base::getNamespaceVersion(package)
+    mismatches <- namespace_guards(different_namespace)
+    check("Both guards reject an actually different loaded namespace version",
+      all(vapply(mismatches, function(e) inherits(e, "error") &&
+        grepl("xtable: a different version is already loaded", conditionMessage(e), fixed = TRUE), logical(1))))
     expr <- parse(file.path(source_dir, "PASA.R"), encoding = "UTF-8", keep.source = FALSE)
     check("Startup expression is identified", is.call(expr[[length(expr)]]) &&
             identical(expr[[length(expr)]][[1L]], as.name("shinyApp")))

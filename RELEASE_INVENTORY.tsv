@@ -34,7 +34,7 @@ reproducibility/INSTALL_DEPENDENCIES.R	3888	author-created software/configuratio
 reproducibility/INSTALLATION.md	2153	documentation, artwork, example or metadata	Author CC-BY-4.0 scope; see LICENSE.md
 reproducibility/LAUNCH_INSTRUCTIONS.md	751	documentation, artwork, example or metadata	Author CC-BY-4.0 scope; see LICENSE.md
 reproducibility/LAUNCH_PASA.ps1	2239	author-created software/configuration	MIT
-reproducibility/LOAD_LOCKED_ENVIRONMENT.R	6175	author-created software/configuration	MIT
+reproducibility/LOAD_LOCKED_ENVIRONMENT.R	6192	author-created software/configuration	MIT
 reproducibility/PASA_DEFAULTS_AND_LIMITS.tsv	40974	documentation, artwork, example or metadata	Author CC-BY-4.0 scope; see LICENSE.md
 reproducibility/R_PACKAGE_REQUIREMENTS.md	10509	documentation, artwork, example or metadata	Author CC-BY-4.0 scope; see LICENSE.md
 reproducibility/README.md	782	documentation, artwork, example or metadata	Author CC-BY-4.0 scope; see LICENSE.md
@@ -43,7 +43,7 @@ reproducibility/RUN_PASA.R	2853	author-created software/configuration	MIT
 reproducibility/SOURCE_CHECKSUMS.tsv	4523	documentation, artwork, example or metadata	Author CC-BY-4.0 scope; see LICENSE.md
 reproducibility/VERIFY_ENVIRONMENT.R	6249	author-created software/configuration	MIT
 SECURITY.md	1255	documentation, artwork, example or metadata	Author CC-BY-4.0 scope; see LICENSE.md
-source_snapshot/app.R	3915	author-created software/configuration	MIT
+source_snapshot/app.R	3932	author-created software/configuration	MIT
 source_snapshot/data/CIE_1931_2deg_380_780_10nm.csv	1057	adapted CIE table	CC-BY-SA-4.0
 source_snapshot/data/CIE_D65_380_780_10nm.csv	450	adapted CIE table	CC-BY-SA-4.0
 source_snapshot/data/CIE_DATA_NOTICE.md	4628	documentation, artwork, example or metadata	Author CC-BY-4.0 scope; see LICENSE.md
@@ -82,4 +82,4 @@ THIRD_PARTY_NOTICES.md	3461	documentation, artwork, example or metadata	Author C
 validation/release/browser/package-lock.json	1761	dependency metadata	Upstream notices
 validation/release/browser/package.json	218	documentation, artwork, example or metadata	Author CC-BY-4.0 scope; see LICENSE.md
 validation/release/browser/smoke.cjs	8371	author-created software/configuration	MIT
-validation/release/SMOKE_RELEASE.R	16575	author-created software/configuration	MIT
+validation/release/SMOKE_RELEASE.R	18714	author-created software/configuration	MIT

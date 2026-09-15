@@ -36,7 +36,7 @@ for (package_name in names(pasa_hosted_lock$Packages)) {
   actual <- tryCatch(as.character(utils::packageVersion(package_name, lib.loc = .libPaths())), error = function(e) "missing")
   if (!identical(actual, expected))
     pasa_hosted_errors <- c(pasa_hosted_errors, paste0(package_name, ": expected ", expected, ", found ", actual))
-  if (package_name %in% loadedNamespaces() && !identical(as.character(getNamespaceVersion(package_name)), expected))
+  if (package_name %in% loadedNamespaces() && !identical(as.character(package_version(getNamespaceVersion(package_name))), expected))
     pasa_hosted_errors <- c(pasa_hosted_errors, paste0(package_name, ": a different version is already loaded; restart the host process"))
   package_dir <- tryCatch(find.package(package_name, lib.loc = .libPaths(), quiet = TRUE), error = function(e) character())
   if (length(package_dir)) {

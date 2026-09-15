@@ -67,7 +67,7 @@
         errors <- c(errors, paste0(package_name, ": built for ", fields[2L], "; current platform is ", R.version$platform))
     }
     if (package_name %in% loadedNamespaces() &&
-      !identical(as.character(getNamespaceVersion(package_name)), expected))
+      !identical(as.character(package_version(getNamespaceVersion(package_name))), expected))
     errors <- c(errors, paste0(package_name, ": a different version is already loaded; restart R"))
   }
   if (length(errors)) stop("Prepared PASA library does not match renv.lock:\n",
