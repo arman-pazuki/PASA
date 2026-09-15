@@ -17,10 +17,11 @@ package_root <- normalizePath(file.path(repro_dir, ".."), winslash = "/",
 app_dir <- file.path(package_root, "source_snapshot")
 app_file <- file.path(app_dir, "PASA.R")
 module_file <- file.path(app_dir, "deconvolution_module.R")
+io_file <- file.path(app_dir, "pasa_io.R")
 loader_file <- file.path(repro_dir, "LOAD_LOCKED_ENVIRONMENT.R")
 output_file <- file.path(repro_dir, "PASA_DEFAULTS_AND_LIMITS.tsv")
 
-for (required in c(app_file, module_file, loader_file)) {
+for (required in c(app_file, module_file, io_file, loader_file)) {
   if (!file.exists(required)) stop("Missing required file: ", required)
 }
 source(loader_file, local = TRUE, encoding = "UTF-8")
@@ -46,6 +47,7 @@ required_app <- c(
   "RELEASE_ID", "INPUT_LIMITS", "GROWTH_CONST", "GROWTH_MIN_LOG_RISE",
   "SIM_ROUGHNESS_MAX", "SIM_MIN_DYNRANGE", "SIM_MIN_SNR",
   ".SIM_BUDGET_TRACE_STOPS", ".SIM_TRACE_HARD_MAX", ".SIM_UI_PAIR_LIMIT",
+  ".SIM_AUTO_WORK_MAX", ".SIM_WORK_HARD_MAX", ".PASA_IO_MAX_JOBS", "NOISE_QC_PARAMS",
   "AUC_MAX_GAP_NM",
   "COVERAGE_ABS_MAX_GAP_NM", "RESAMPLE_BIN_TOL", "DECON_CLASS_PRESETS",
   ".decon_depth_cap", ".decon_effective_k",
@@ -68,6 +70,7 @@ app_text <- paste(readLines(app_file, warn = FALSE, encoding = "UTF-8"),
                   collapse = "\n")
 module_text <- paste(readLines(module_file, warn = FALSE, encoding = "UTF-8"),
                      collapse = "\n")
+io_text <- paste(readLines(io_file, warn = FALSE, encoding = "UTF-8"), collapse = "\n")
 expect_source <- function(id, pattern, text) {
   if (!grepl(pattern, text, perl = TRUE)) {
     stop("Source contract not found for ", id, ": ", pattern)
@@ -82,6 +85,10 @@ expect_source("minimum overlap", "SIM_MIN_OVERLAP_NM <- 40", app_text)
 expect_source("minimum coverage", "SIM_MIN_COVER_FRAC <- 0\\.5", app_text)
 expect_source("minimum native support", "n_min_native < 10", app_text)
 expect_source("similarity second-derivative span", "SIM_D2_SPAN_NM <- 15", app_text)
+expect_source("similarity second-derivative support", "SIM_D2_MIN_NODES +<- 8L", app_text)
+expect_source("input reader queue ceiling", "job\\$queued, units = \"secs\"\\)\\) > 180", io_text)
+expect_source("input execution budget starts before initialization", "task_deadline <- Sys.time\\(\\) \\+ BUDGET", io_text)
+expect_source("feedback execution budget", "budget = 60, on_result = finish_feedback", app_text)
 expect_source("r/SAM tier thresholds",
               "r_analysis >= 0\\.995 && sam_deg <= 2", app_text)
 expect_source("decon bootstrap count", "n_boot <- if \\(isTRUE\\(input\\$decon_bootstrap\\)\\) 80L else 0L", app_text)
@@ -214,13 +221,19 @@ add("Similarity", "minimum_dynamic_range", app_env$SIM_MIN_DYNRANGE, "entered un
 add("Similarity", "minimum_feature_to_noise", app_env$SIM_MIN_SNR, "ratio", "development threshold",
     "PASA.R: SIM_MIN_SNR", "source-evaluated", "Consulted after the roughness gate.")
 add("Similarity", "default_trace_budget", app_env$.sim_budget_cap(app_env$.sim_budget_default_index()), "traces", "default",
-    "PASA.R: .SIM_BUDGET_TRACE_STOPS/.sim_budget_default_index()", "source-evaluated", "All-pairs work above this requires explicit authorization.")
+    "PASA.R: .SIM_BUDGET_TRACE_STOPS/.sim_budget_default_index()", "source-evaluated", "The selected cap is enforced. Above the automatic threshold, raise the selected cap and explicitly authorize work within the absolute limits.")
 add("Similarity", "hard_trace_ceiling", app_env$.SIM_TRACE_HARD_MAX, "traces", "hard limit",
-    "PASA.R: .SIM_TRACE_HARD_MAX", "source-evaluated", "Applies even to the consented no-limit setting.")
+    "PASA.R: .SIM_TRACE_HARD_MAX", "source-evaluated", "Applies to every slider position, including Maximum (1600); consent cannot bypass it.")
+add("Similarity", "automatic_work_ceiling", app_env$.SIM_AUTO_WORK_MAX, "estimated pair-grid nodes", "consent threshold",
+    "PASA.R: .SIM_AUTO_WORK_MAX", "source-evaluated", "Above this, consent is required for the current data; the selected trace cap and absolute work limit still apply.")
+add("Similarity", "hard_work_ceiling", app_env$.SIM_WORK_HARD_MAX, "estimated pair-grid nodes", "hard limit",
+    "PASA.R: .SIM_WORK_HARD_MAX", "source-evaluated", "Upper bound from pairwise wavelength-grid unions; consent cannot bypass it. ZIP and interactive computation use the same limit.")
 add("Similarity", "ui_pair_projection_limit", app_env$.SIM_UI_PAIR_LIMIT, "pairs", "presentation limit",
     "PASA.R: .SIM_UI_PAIR_LIMIT", "source-evaluated", "Caps the lossy interactive table/network projection; canonical exports retain every computed pair.")
 add("Similarity", "second_derivative_span", 15, "nm", "advisory parameter",
     "PASA.R: compute_similarity()/SIM_D2_SPAN_NM", "static-source-verified", "Wavelength span used by the advisory second-derivative similarity metric.")
+add("Similarity", "second_derivative_minimum_joint_nodes", 8L, "nodes", "support floor",
+    "PASA.R: compute_similarity()/SIM_D2_MIN_NODES", "static-source-verified", "At least eight jointly supported, varying derivative values are needed; this diagnostic does not determine the primary similarity tier.")
 
 # Deconvolution defaults, tested/advanced boundaries, and optimization design.
 add("Deconvolution", "advanced_mode_default", snap("advanced_mode"), "logical", "default",
@@ -321,6 +334,8 @@ add("Input", "lower_deployment_limit", "PASA_UPLOAD_LIMIT_MIB or shiny.maxReques
     "PASA.R: .pasa_upload_limit_bytes()", "static-source-reviewed", "The UI shows the effective app limit. A reverse proxy can impose a smaller limit.")
 add("Noise QC", "method_identifier", app_env$.NOISE_QC_METHOD, "text", "method",
     "PASA.R: .NOISE_QC_METHOD", "source-evaluated", "Operational residual and neighboring-point roughness screen.")
+add("Noise QC", "maximum_native_axis_step", app_env$NOISE_QC_PARAMS$max_axis_step_nm, "nm", "eligibility ceiling",
+    "PASA.R: NOISE_QC_PARAMS$max_axis_step_nm", "source-evaluated", "Coarser native axes are not classified because sampling curvature can confound the residual screen; display interpolation does not establish eligibility.")
 for (key in c("min_global_resid", "min_tail_resid", "min_region_resid", "min_adjacent_resid"))
   add("Noise QC", key, app_env$NOISE_QC_PARAMS[[key]], "residuals", "support floor",
       paste0("PASA.R: NOISE_QC_PARAMS$",key), "source-evaluated", "Insufficient support is not evaluated, never replaced by zero.")
@@ -340,12 +355,22 @@ add("Deconvolution", "bootstrap_conditional", "same-K draws / selected draws", "
 add("Deconvolution", "bootstrap_outcomes", "selected; no admissible K; execution error; invalid return", "text", "contract",
     "deconvolution_module.R: bootstrap accounting", "static-source-reviewed", "Every requested draw has an outcome record.")
 
-add("Input", "worker_startup_stage_budget", app_env$.PASA_WORKER_READY_TIMEOUT_SECS, "seconds", "startup limit",
-    "PASA.R: .PASA_WORKER_READY_TIMEOUT_SECS", "source-evaluated", "Connectivity and app initialization each have a bounded budget; whole-file load deadlines remain in force. A new request can retry a failed idle worker.")
+add("Analysis worker", "readiness_stage_budget", app_env$.PASA_WORKER_READY_TIMEOUT_SECS, "seconds", "startup limit",
+    "PASA.R: .PASA_WORKER_READY_TIMEOUT_SECS", "source-evaluated", "Growth/deconvolution worker connectivity and source initialization each have this budget; the separate input reader uses the limits below.")
+add("Input reader", "queue_wait_ceiling", 180, "seconds", "queue limit",
+    "pasa_io.R: .pasa_io_runner()/poll()", "static-source-verified", "A job that has not started receives an explicit busy/startup failure, rather than an execution-timeout message.")
+add("Input reader", "hosted_load_execution_budget", limits$deadline_seconds$hosted, "seconds", "execution limit",
+    "PASA.R: INPUT_LIMITS$deadline_seconds$hosted; pasa_io.R: task_deadline", "source-evaluated", "Starts when the job begins, includes source initialization, and is separate from queue waiting. Also used for hosted worksheet inspection.")
+add("Input reader", "desktop_load_execution_budget", limits$deadline_seconds$desktop, "seconds", "execution limit",
+    "PASA.R: INPUT_LIMITS$deadline_seconds$desktop; pasa_io.R: task_deadline", "source-evaluated", "Starts when the job begins, includes source initialization, and is separate from queue waiting. Also used for desktop worksheet inspection.")
+add("Input reader", "feedback_execution_budget", 60, "seconds", "execution limit",
+    "PASA.R: .run_io(feedback); pasa_io.R: task_deadline", "static-source-verified", "Starts when the job begins and includes source initialization; the HTTP request has its own shorter timeout.")
+add("Input reader", "maximum_owned_jobs", app_env$.PASA_IO_MAX_JOBS, "jobs", "hard limit",
+    "pasa_io.R: .PASA_IO_MAX_JOBS", "source-evaluated", "Process-wide bound includes queued jobs and cancellations still owned by the durable reaper; a full reader reports busy. Profile restart waits until all owned jobs are terminal.")
 
 table <- do.call(rbind, rows)
-if (nrow(table) != 83L) {
-  stop("Defaults/limits registry contract requires exactly 83 rows; observed ", nrow(table), ".")
+if (nrow(table) != 92L) {
+  stop("Defaults/limits registry contract requires exactly 92 rows; observed ", nrow(table), ".")
 }
 freeze_requested <- identical(Sys.getenv("PASA_RELEASE_FROZEN", unset = "0"), "1")
 table$release_version <- as.character(app_env$RELEASE_ID$version)
@@ -354,6 +379,9 @@ table$pasa_r_sha256 <- if (freeze_requested) {
 } else "PENDING_FINAL_FREEZE"
 table$deconvolution_module_sha256 <- if (freeze_requested) {
   toupper(unname(tools::sha256sum(module_file)))
+} else "PENDING_FINAL_FREEZE"
+table$pasa_io_sha256 <- if (freeze_requested) {
+  toupper(unname(tools::sha256sum(io_file)))
 } else "PENDING_FINAL_FREEZE"
 table$registry_status <- if (freeze_requested) "FINAL_SOURCE_VERIFIED" else "PROVISIONAL_UNTIL_SOURCE_FREEZE"
 

@@ -83,7 +83,7 @@ jobs:
             libfontconfig1-dev libfreetype6-dev libcairo2-dev \
             libharfbuzz-dev libfribidi-dev libpng-dev libjpeg-dev libtiff-dev \
             libpoppler-cpp-dev poppler-data libqpdf-dev \
-            libglpk-dev libgmp3-dev libnlopt-dev zlib1g-dev \
+            libglpk-dev libgmp3-dev libnlopt-dev libuv1-dev zlib1g-dev \
             fonts-dejavu-core
 
       - name: Install macOS system libraries
@@ -91,7 +91,7 @@ jobs:
         run: |
           test "$(brew --prefix)" = /opt/homebrew
           brew install cmake pkgconf poppler freetype fontconfig \
-            libxml2 openssl@3 curl icu4c glpk nlopt jpeg-turbo libpng libtiff
+            libxml2 openssl@3 curl icu4c glpk nlopt jpeg-turbo libpng libtiff gettext libuv
           printf 'PKG_CONFIG_PATH=%s\n' "$(brew --prefix)/lib/pkgconfig:$(brew --prefix freetype)/lib/pkgconfig:$(brew --prefix libxml2)/lib/pkgconfig:$(brew --prefix openssl@3)/lib/pkgconfig:$(brew --prefix curl)/lib/pkgconfig:$(brew --prefix icu4c)/lib/pkgconfig" >> "$GITHUB_ENV"
 
       - uses: r-lib/actions/setup-r@v2
@@ -100,6 +100,18 @@ jobs:
           use-public-rspm: false
           cran: https://cloud.r-project.org
           Ncpus: 2
+
+      - name: Configure macOS gettext headers and libraries
+        if: runner.os == 'macOS'
+        run: |
+          gettext_prefix="$(brew --prefix gettext)"
+          test -f "$gettext_prefix/include/libintl.h"
+          test -f "$gettext_prefix/lib/libintl.dylib"
+          makevars="$RUNNER_TEMP/pasa-Makevars"
+          # Append to R defaults through a job-local Makevars, not global shell flags.
+          printf 'CPPFLAGS += -I%s/include\nLDFLAGS += -L%s/lib\n' "$gettext_prefix" "$gettext_prefix" > "$makevars"
+          printf 'R_MAKEVARS_USER=%s\n' "$makevars" >> "$GITHUB_ENV"
+          cat "$makevars" > .ci-results/macos-Makevars.txt
 
       - name: Verify exact R and native architecture
         env:
@@ -138,5 +150,6 @@ jobs:
           path: |
             .ci-results/
             validation/release/smoke-output/
+          include-hidden-files: true
           retention-days: 3
           if-no-files-found: warn

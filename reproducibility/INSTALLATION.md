@@ -10,7 +10,7 @@ Rscript --vanilla reproducibility/VERIFY_ENVIRONMENT.R
 Rscript --vanilla START_PASA.R
 ```
 
-The installer restores the exact 127 package versions in the lockfile, including renv itself. It needs internet access on the first run. On Linux and macOS, first install the native libraries described in [R and package requirements](R_PACKAGE_REQUIREMENTS.md). For source-package installation on Windows, use the CRAN build tools compatible with R 4.6.0.
+The installer restores the exact 127 package versions in the lockfile, including renv itself. It needs internet access on the first run. On Linux and macOS, first install the native libraries described in [R and package requirements](R_PACKAGE_REQUIREMENTS.md). On macOS arm64, also complete the [gettext compiler setup](R_PACKAGE_REQUIREMENTS.md#macos-arm64-source-builds) before restoring the lock; installing gettext alone does not add its headers to R's compiler search path. For source-package installation on Windows, use the CRAN build tools compatible with R 4.6.0.
 
 Verification prints ENVIRONMENT_VERIFICATION_PASS only when the R/package versions and recorded source checksums agree. The launcher never installs packages. It starts a local browser interface bound to 127.0.0.1; close its console with Ctrl+C to stop the app.
 

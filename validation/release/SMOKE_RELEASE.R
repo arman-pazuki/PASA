@@ -56,6 +56,29 @@ main <- function() {
     suppressPackageStartupMessages(eval(expr[-length(expr)], envir = app))
     check("Application sources and UI build", is.function(app$server) && !is.null(app$ui) &&
             is.function(app$deconvolve_spectrum))
+    registry <- utils::read.delim(file.path(root, "reproducibility/PASA_DEFAULTS_AND_LIMITS.tsv"),
+      check.names = FALSE, colClasses = "character")
+    registry_expected <- c(
+      release_version = as.character(app$RELEASE_ID$version),
+      pasa_r_sha256 = toupper(unname(tools::sha256sum(file.path(source_dir, "PASA.R")))),
+      deconvolution_module_sha256 = toupper(unname(tools::sha256sum(file.path(source_dir, "deconvolution_module.R")))),
+      pasa_io_sha256 = toupper(unname(tools::sha256sum(file.path(source_dir, "pasa_io.R")))),
+      registry_status = "FINAL_SOURCE_VERIFIED")
+    registry_matches_source <- function(value) {
+      if (!is.data.frame(value) || !nrow(value) || !all(names(registry_expected) %in% names(value))) return(FALSE)
+      all(vapply(names(registry_expected), function(key)
+        all(!is.na(value[[key]]) & value[[key]] == registry_expected[[key]]), logical(1)))
+    }
+    check("Defaults registry identifies every final source row", registry_matches_source(registry))
+    stale_rejected <- vapply(names(registry_expected), function(key) {
+      stale <- registry
+      stale[[key]][nrow(stale)] <- "stale-regression-fixture"
+      !registry_matches_source(stale)
+    }, logical(1))
+    missing_hash <- registry
+    missing_hash$pasa_io_sha256 <- NULL
+    check("Registry guard rejects stale hashes, version, status and missing provenance",
+      all(stale_rejected) && !registry_matches_source(missing_hash))
     # The runtime also reads its CIE data at startup; enumerate actual distributed tables.
     assets <- app$PASA_RUNTIME_BUNDLE_FILES
     missing <- assets[!file.exists(file.path(source_dir, assets))]
