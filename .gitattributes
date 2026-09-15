@@ -1,0 +1,19 @@
+# Preserve exact distribution bytes across operating systems for checksum verification.
+* -text
+*.lock -text
+*.zip binary
+*.pdf binary
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.tif binary
+*.tiff binary
+*.rds binary
+*.RData binary
+*.xlsx binary
+*.xls binary
+*.woff binary
+*.woff2 binary
+*.ttf binary
+*.otf binary

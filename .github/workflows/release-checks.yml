@@ -1,0 +1,142 @@
+name: Release checks
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    tags: ['v*']
+  pull_request:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: release-checks-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  clean-install-and-smoke:
+    name: R 4.6.0 / ${{ matrix.label }}
+    runs-on: ${{ matrix.runner }}
+    timeout-minutes: 90
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - runner: ubuntu-24.04
+            label: Ubuntu 24.04 x86_64
+            os: Linux
+            arch: x86_64
+          - runner: macos-15
+            label: macOS 15 arm64
+            os: Darwin
+            arch: arm64
+    defaults:
+      run:
+        shell: bash
+    env:
+      CI: 'true'
+      TZ: UTC
+      RENV_CONFIG_CACHE_ENABLED: 'FALSE'
+      RENV_CONFIG_AUTOLOADER_ENABLED: 'FALSE'
+      RENV_CONFIG_REPOS_OVERRIDE: https://cloud.r-project.org
+      DOWNLOAD_STATIC_LIBV8: '1'
+      PASA_FEEDBACK_ENABLED: '0'
+      PASA_LAUNCH_BROWSER: '0'
+      PASA_PORT: '3838'
+      SPECTRA_HOSTED_MODE: '1'
+
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+
+      - name: Require the declared runner OS and architecture
+        env:
+          EXPECTED_OS: ${{ matrix.os }}
+          EXPECTED_ARCH: ${{ matrix.arch }}
+        run: |
+          mkdir -p .ci-results
+          test "$(uname -s)" = "$EXPECTED_OS"
+          test "$(uname -m)" = "$EXPECTED_ARCH"
+          if [ "$EXPECTED_OS" = Linux ]; then
+            . /etc/os-release
+            test "$ID" = ubuntu
+            test "$VERSION_ID" = 24.04
+            cat /etc/os-release > .ci-results/runner.txt
+          else
+            test "$(sw_vers -productVersion | cut -d. -f1)" = 15
+            test "$(sysctl -in sysctl.proc_translated 2>/dev/null || true)" != 1
+            sw_vers > .ci-results/runner.txt
+          fi
+          uname -a >> .ci-results/runner.txt
+          test ! -d runtime/library
+          test ! -d source_snapshot/renv/library
+
+      - name: Install Ubuntu system libraries
+        if: runner.os == 'Linux'
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends \
+            build-essential gfortran cmake pkg-config \
+            libcurl4-openssl-dev libssl-dev libxml2-dev libicu-dev \
+            libfontconfig1-dev libfreetype6-dev libcairo2-dev \
+            libharfbuzz-dev libfribidi-dev libpng-dev libjpeg-dev libtiff-dev \
+            libpoppler-cpp-dev poppler-data libqpdf-dev \
+            libglpk-dev libgmp3-dev libnlopt-dev zlib1g-dev \
+            fonts-dejavu-core
+
+      - name: Install macOS system libraries
+        if: runner.os == 'macOS'
+        run: |
+          test "$(brew --prefix)" = /opt/homebrew
+          brew install cmake pkgconf poppler freetype fontconfig \
+            libxml2 openssl@3 curl icu4c glpk nlopt jpeg-turbo libpng libtiff
+          printf 'PKG_CONFIG_PATH=%s\n' "$(brew --prefix)/lib/pkgconfig:$(brew --prefix freetype)/lib/pkgconfig:$(brew --prefix libxml2)/lib/pkgconfig:$(brew --prefix openssl@3)/lib/pkgconfig:$(brew --prefix curl)/lib/pkgconfig:$(brew --prefix icu4c)/lib/pkgconfig" >> "$GITHUB_ENV"
+
+      - uses: r-lib/actions/setup-r@v2
+        with:
+          r-version: '4.6.0'
+          use-public-rspm: false
+          cran: https://cloud.r-project.org
+          Ncpus: 2
+
+      - name: Verify exact R and native architecture
+        env:
+          EXPECTED_OS: ${{ matrix.os }}
+        run: |
+          Rscript --vanilla -e 'stopifnot(getRversion() == "4.6.0", identical(unname(Sys.info()[["sysname"]]), Sys.getenv("EXPECTED_OS"))); if (Sys.getenv("EXPECTED_OS") == "Darwin") stopifnot(R.version$arch %in% c("aarch64", "arm64")) else stopifnot(R.version$arch == "x86_64"); print(R.version); print(capabilities()); stopifnot(capabilities("cairo"))' 2>&1 | tee .ci-results/r-platform.log
+
+      # No renv cache is restored: every run verifies a fresh exact-lock install.
+      - name: Restore the complete pinned dependency set
+        run: Rscript --vanilla reproducibility/INSTALL_DEPENDENCIES.R 2>&1 | tee .ci-results/restore.log
+
+      - name: Verify installed versions and package integrity
+        run: Rscript --vanilla reproducibility/VERIFY_ENVIRONMENT.R 2>&1 | tee .ci-results/verify.log
+
+      - name: Run scientific and export release smoke checks
+        run: Rscript --vanilla validation/release/SMOKE_RELEASE.R 2>&1 | tee .ci-results/smoke-r.log
+
+      - uses: actions/setup-node@v7
+        with:
+          node-version: '24'
+          package-manager-cache: false
+
+      - name: Install the pinned browser test runner
+        run: |
+          npm ci --prefix validation/release/browser --ignore-scripts --no-audit --no-fund
+          node validation/release/browser/node_modules/playwright/cli.js install --with-deps chromium
+
+      - name: Exercise the launched application in Chromium
+        run: node validation/release/browser/smoke.cjs 2>&1 | tee .ci-results/smoke-browser.log
+
+      - name: Keep short-lived check evidence
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: release-checks-${{ matrix.runner }}-${{ github.run_attempt }}
+          path: |
+            .ci-results/
+            validation/release/smoke-output/
+          retention-days: 3
+          if-no-files-found: warn

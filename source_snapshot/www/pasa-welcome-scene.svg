@@ -1,0 +1,24 @@
+<svg id="pasa-welcome-scene" class="pasa-welcome-artwork" viewBox="0 236 1513 374" width="1513" height="374" role="img" aria-labelledby="pasa-welcome-image-title pasa-welcome-image-desc" xmlns="http://www.w3.org/2000/svg">
+  <title id="pasa-welcome-image-title">Light passing through a cuvette containing green liquid</title>
+  <desc id="pasa-welcome-image-desc">A lamp sends light through a filter and a clear plastic cuvette containing transparent green liquid. A detector sends a signal to a monitor. A moving cursor reveals a fixed two-peak illustrative spectrum. The image does not represent measured results or task progress.</desc>
+  <defs>
+    <filter id="pasa-welcome-ray-soft" x="-60%" y="-250%" width="220%" height="600%"><feGaussianBlur stdDeviation="3"/></filter>
+    <filter id="pasa-welcome-curve-soft" x="-20%" y="-20%" width="140%" height="140%"><feGaussianBlur stdDeviation="3.5"/></filter>
+    <filter id="pasa-welcome-dot-soft" x="-200%" y="-200%" width="500%" height="500%"><feGaussianBlur stdDeviation="4"/></filter>
+    <linearGradient id="pasa-welcome-ray-shine"><stop stop-color="#fff4bd" stop-opacity="0"/><stop offset=".5" stop-color="#fffad9" stop-opacity=".75"/><stop offset="1" stop-color="#fff4bd" stop-opacity="0"/></linearGradient>
+    <clipPath id="pasa-welcome-screen-clip"><path d="M1077,288L1428,273L1404,466L1070,460Z"/></clipPath>
+  </defs>
+  <image href="pasa-ui/pasa-welcome-scene.webp" x="0" y="0" width="1513" height="1040" preserveAspectRatio="xMidYMid meet"/>
+  <path class="pasa-welcome-beam" d="M274,417L750,428" stroke="#fff4bb" stroke-width="9" opacity=".1" filter="url(#pasa-welcome-ray-soft)"/>
+  <g class="pasa-welcome-light"><rect x="-31" y="-4" width="62" height="8" fill="url(#pasa-welcome-ray-shine)" filter="url(#pasa-welcome-ray-soft)"/><rect x="-22" y="-1.1" width="44" height="2.2" fill="url(#pasa-welcome-ray-shine)"/></g>
+  <path class="pasa-welcome-reflection" d="M557,286L558,509M633,288L634,508" fill="none" stroke="#d9ffea" stroke-width="2" opacity=".13"/>
+  <path class="pasa-welcome-signal" d="M906,428C951,424 948,475 1010,455" fill="none" stroke="#a7ffed" stroke-width="3" stroke-linecap="round" stroke-dasharray="6 27" opacity=".5"/>
+  <g clip-path="url(#pasa-welcome-screen-clip)">
+    <path class="pasa-welcome-base" d="M1074,446C1110,441 1125,422 1140,361C1146,335 1151,309 1158,309C1172,307 1170,387 1181,418C1186,433 1193,437 1200,435C1220,429 1222,427 1233,419C1254,398 1263,426 1280,404C1294,381 1293,356 1304,356C1316,356 1319,394 1330,421C1343,444 1365,451 1401,453" fill="none" stroke="#7594b4" stroke-width="2.4" opacity=".65"/>
+    <path class="pasa-welcome-glow" fill="none" stroke="#55e5d7" stroke-width="5.3" filter="url(#pasa-welcome-curve-soft)" opacity=".52"/>
+    <path class="pasa-welcome-trace" fill="none" stroke="#7dfff0" stroke-width="2.6" stroke-linecap="round"/>
+    <path class="pasa-welcome-scan" fill="none" stroke="#82d9dc" stroke-width="1" opacity=".5"/>
+    <circle class="pasa-welcome-halo" r="8" fill="#79fff0" filter="url(#pasa-welcome-dot-soft)" opacity="0"/>
+    <circle class="pasa-welcome-dot" r="4.1" fill="#c0fff5" opacity="0"/>
+  </g>
+</svg>
