@@ -1,0 +1,26 @@
+#metrics_ui { min-width:0; max-width:100%; }
+.pasa-metrics-scroll-host { position:relative; width:100%; max-width:100%; min-width:0; }
+.pasa-metrics-scroll-viewport { width:100%; max-width:100%; min-width:0; box-sizing:border-box; overflow-x:auto!important; }
+.pasa-metrics-scroll-tools { position:sticky; top:var(--pasa-header-height,64px); z-index:8; width:100%; height:20px; overflow:hidden; background:var(--bs-body-bg,#fff); border-block:1px solid var(--bs-border-color,#d8dce0); scrollbar-color:var(--bs-secondary-color,#737c85) var(--bs-tertiary-bg,#e9ecef); }
+.pasa-metrics-scroll-spacer { height:1px; min-height:1px; }
+.pasa-metrics-scroll-tools[hidden],.pasa-metrics-pan[hidden] { display:none!important; }
+.pasa-metrics-pan { position:absolute; z-index:9; transform:translateY(-50%); width:38px; height:54px; padding:0; border:1px solid var(--bs-border-color,#c9d0d7); border-radius:9px; color:var(--bs-body-color,#173047); background:rgba(240,246,250,.78); background:color-mix(in srgb,var(--bs-body-bg,#fff) 76%,transparent); backdrop-filter:blur(5px); box-shadow:0 2px 10px #0002; opacity:.8; font:400 38px/1 system-ui,sans-serif; cursor:pointer; touch-action:manipulation; }
+.pasa-metrics-pan-left { left:3px; }
+.pasa-metrics-pan-right { right:3px; }
+.pasa-metrics-pan:hover,.pasa-metrics-pan:focus-visible { opacity:1; }
+.pasa-metrics-pan:disabled { opacity:.18; cursor:default; box-shadow:none; }
+.pasa-metrics-scroll-tools:focus-visible,.pasa-metrics-scroll-viewport:focus-visible,.pasa-metrics-pan:focus-visible { outline:3px solid var(--bs-primary,#007bc2); outline-offset:2px; }
+@media (prefers-reduced-motion:reduce) { .pasa-metrics-scroll-viewport,.pasa-metrics-scroll-tools { scroll-behavior:auto; } }
+@media (forced-colors:active) { .pasa-metrics-pan { background:Canvas; border:1px solid ButtonText; color:ButtonText; opacity:1; } .pasa-metrics-pan:disabled { color:GrayText; border-color:GrayText; } }
+
+.pasa-metrics-scroll-track { appearance:none; display:block; width:calc(100% - 12px); height:8px; margin:6px; padding:0; background:var(--bs-tertiary-bg,#dce2e7); border-radius:6px; cursor:ew-resize; }
+.pasa-metrics-scroll-track::-webkit-slider-thumb { appearance:none; width:64px; height:12px; border:1px solid var(--bs-body-bg,#fff); border-radius:6px; background:var(--bs-secondary-color,#737c85); }
+.pasa-metrics-scroll-track::-moz-range-thumb { width:64px; height:12px; border:1px solid var(--bs-body-bg,#fff); border-radius:6px; background:var(--bs-secondary-color,#737c85); }
+.pasa-metrics-pagination { display:flex; flex-wrap:wrap; align-items:center; gap:10px; margin:12px 0; }
+.pasa-metrics-pagination small { color:var(--bs-secondary-color); }
+#metrics_ui .gt_table { color:var(--bs-body-color)!important; background:var(--bs-body-bg)!important; }
+#metrics_ui .gt_col_headings,#metrics_ui .gt_heading,#metrics_ui .gt_group_heading { background:var(--bs-tertiary-bg)!important; color:var(--bs-body-color)!important; }
+#metrics_ui .gt_row { color:inherit; }
+#pasa-metrics-copy-dialog { width:min(900px,90vw); max-height:85vh; border:1px solid var(--bs-border-color,#aaa); border-radius:10px; background:var(--bs-body-bg,#fff); color:var(--bs-body-color,#111); padding:20px; }
+#pasa-metrics-copy-dialog textarea { display:block; width:100%; height:45vh; margin:12px 0; font:12px/1.4 monospace; white-space:pre; }
+#pasa-metrics-copy-dialog button { margin-right:10px; padding:6px 16px; }

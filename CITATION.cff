@@ -1,0 +1,23 @@
+cff-version: 1.2.0
+message: "If you use PASA, please cite the software and accompanying Software Note."
+title: "PASA: Photosynthetic Absorbance Spectra Analyzer"
+type: software
+version: "1.0.0"
+authors:
+  - family-names: "Pazuki"
+    given-names: "Arman"
+    orcid: "https://orcid.org/0000-0001-5291-1824"
+    affiliation: "Centre Algatech, Institute of Microbiology of the Czech Academy of Sciences, Třeboň, Czech Republic"
+    email: "pasa.app@outlook.com"
+  - family-names: "Aflaki"
+    given-names: "Fatemeh"
+    orcid: "https://orcid.org/0000-0002-4005-2476"
+    affiliation: "Biosystematics Group, Wageningen University & Research, Wageningen, the Netherlands"
+contact:
+  - family-names: "Pazuki"
+    given-names: "Arman"
+    email: "pasa.app@outlook.com"
+    orcid: "https://orcid.org/0000-0001-5291-1824"
+    affiliation: "Centre Algatech, Institute of Microbiology of the Czech Academy of Sciences, Třeboň, Czech Republic"
+repository-code: "https://github.com/arman-pazuki/PASA"
+license: "MIT"

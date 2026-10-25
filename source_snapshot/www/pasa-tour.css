@@ -1,0 +1,62 @@
+/* Modeless, motion-free coachmarks: the highlighted control stays usable. */
+#pasa-tour-card[hidden], #pasa-tour-highlight[hidden] { display: none !important; }
+#pasa-tour-highlight {
+  position: fixed;
+  z-index: 1062;
+  border: 3px solid var(--bs-primary, #0f62fe);
+  outline: 2px solid var(--bs-body-bg, #fff);
+  border-radius: 3px;
+  pointer-events: none;
+}
+#pasa-tour-card {
+  position: fixed;
+  z-index: 1063;
+  width: min(360px, calc(100vw - 24px));
+  max-height: calc(100vh - 24px);
+  overflow-y: auto;
+  padding: 20px;
+  border: 1px solid var(--bs-border-color, #8d8d8d);
+  border-top: 4px solid var(--bs-primary, #0f62fe);
+  border-radius: 2px;
+  background: var(--bs-body-bg, #fff);
+  color: var(--bs-body-color, #161616);
+  box-shadow: 0 6px 28px rgba(0, 0, 0, .28);
+  font: inherit;
+}
+#pasa-tour-card h2 { font-size: 1.2rem; line-height: 1.3; margin: 0 0 10px; color: inherit; }
+#pasa-tour-card p { font-size: .91rem; line-height: 1.5; margin-bottom: 12px; }
+#pasa-tour-card .pasa-tour-eyebrow { font-size: .75rem; letter-spacing: .04em; margin-bottom: 7px; text-transform: uppercase; }
+#pasa-tour-wait { font-size: .83rem !important; padding-left: 9px; border-left: 2px solid var(--bs-primary, #0f62fe); }
+#pasa-tour-wait:empty { display: none; }
+.pasa-tour-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 7px; }
+.pasa-tour-secondary { justify-content: space-between; margin-top: 10px; }
+#pasa-tour-card button:focus-visible { outline: 3px solid var(--bs-primary, #0f62fe); outline-offset: 3px; }
+.pasa-tour-sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0; }
+html[data-appearance='midnight'] #pasa-tour-card,
+html[data-appearance='midnight-teal'] #pasa-tour-card { background: #071120; color: #d0d8e8; border-color: #1a3355; border-top-color: #4ecdc4; }
+html[data-appearance='midnight'] #pasa-tour-highlight,
+html[data-appearance='midnight-teal'] #pasa-tour-highlight { border-color: #4ecdc4; outline-color: #020a17; }
+html[data-appearance='contrast'] #pasa-tour-card { border: 2px solid #fff; border-top-color: #ffeb3b; box-shadow: none; }
+html[data-appearance='contrast'] #pasa-tour-highlight { border-color: #ffeb3b; outline-color: #000; }
+@media (max-width: 640px) {
+  #pasa-tour-card { padding: 14px; max-height: 45vh; }
+  #pasa-tour-card p { font-size: .84rem; }
+}
+/* The chooser and coachmarks are modeless: the highlighted controls stay usable. */
+#pasa-tour-chooser[hidden], #pasa-tour-card [hidden], #pasa-tour-chooser [hidden] { display: none !important; }
+#pasa-tour-chooser { position:fixed; z-index:1063; top:50%; left:50%; transform:translate(-50%,-50%); width:min(590px,calc(100vw - 24px)); max-height:calc(100vh - 24px); overflow:auto; padding:24px; background:var(--bs-body-bg,#fff); color:var(--bs-body-color,#161616); border:1px solid var(--bs-border-color,#8d8d8d); border-top:4px solid var(--bs-primary,#0f62fe); border-radius:8px; box-shadow:0 6px 28px rgba(0,0,0,.28); }
+#pasa-tour-chooser h2 { font-size:1.3rem; margin:0 0 12px; }
+#pasa-tour-chooser h3 { font-size:1.05rem; margin:0 0 8px; }
+#pasa-tour-chooser p { line-height:1.5; font-size:.92rem; }
+.pasa-tour-choice { border:1px solid var(--bs-border-color,#8d8d8d); padding:16px; border-radius:6px; margin:12px 0; }
+.pasa-tour-choice button { margin:4px 6px 0 0; }
+#pasa-tour-card { width:min(420px,calc(100vw - 24px)); border-radius:8px; }
+.pasa-tour-chapter-label { font-size:.77rem; margin:0 0 4px; }
+#pasa-tour-chapter { margin-bottom:14px; width:100%; }
+#pasa-tour-card select:focus-visible, #pasa-tour-chooser button:focus-visible { outline:3px solid var(--bs-primary,#0f62fe); outline-offset:3px; }
+.pasa-tour-close { position:sticky; top:0; float:right; z-index:1; display:grid; place-items:center; width:36px; height:36px; margin:-8px -8px 4px 10px; padding:0; border:0; border-radius:4px; background:inherit; color:inherit; font:inherit; font-size:1.65rem; line-height:1; cursor:pointer; }
+.pasa-tour-close:hover { background:var(--bs-tertiary-bg,#e9ecef); }
+.pasa-tour-close:focus-visible { outline:3px solid var(--bs-primary,#0f62fe); outline-offset:2px; }
+.pasa-disc.pasa-tour-reveal > .pasa-disc-body { display:block !important; }
+.pasa-disc.pasa-tour-reveal > .pasa-disc-header .pasa-disc-chevron { transform:rotate(180deg); }
+@media (max-width:640px) { #pasa-tour-chooser {padding:16px;} #pasa-tour-card {max-height:48vh;} }

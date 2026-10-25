@@ -1,0 +1,48 @@
+# Install PASA 1.0.0
+
+Use R 4.6.0. Download the repository as a ZIP and extract it, or clone it with Git. Keep the folder structure intact.
+
+For an online installation without a prepared library, run from the repository folder:
+
+```sh
+Rscript --vanilla reproducibility/INSTALL_DEPENDENCIES.R
+Rscript --vanilla reproducibility/VERIFY_ENVIRONMENT.R
+Rscript --vanilla START_PASA.R
+```
+
+The installer restores the exact 127 package versions in the lockfile, including renv itself. It needs internet access on the first run. On Linux and macOS, first install the native libraries described in [R and package requirements](R_PACKAGE_REQUIREMENTS.md). On macOS, install [XQuartz for the Cairo PDF runtime](R_PACKAGE_REQUIREMENTS.md#macos-graphics-runtime). On macOS arm64, also complete the [gettext compiler setup](R_PACKAGE_REQUIREMENTS.md#macos-arm64-source-builds) before restoring the lock; installing gettext alone does not add its headers to R's compiler search path. For source-package installation on Windows, use the CRAN build tools compatible with R 4.6.0.
+
+Verification prints ENVIRONMENT_VERIFICATION_PASS only when the R/package versions and recorded source checksums agree. The launcher never installs packages. It starts a local browser interface bound to 127.0.0.1; close its console with Ctrl+C to stop the app.
+
+Windows users can double-click START_PASA.cmd after installing the packages. If Rscript is not on PATH, use its full path, for example:
+
+```powershell
+& 'C:\Program Files\R\R-4.6.0\bin\Rscript.exe' --vanilla '.\START_PASA.R'
+```
+
+A clone contains source, assets, examples, setup scripts, and a lockfile. It does not include R or platform-specific package binaries. Once dependencies are installed, local-file and demo analysis work offline.
+
+## Prepared-library offline route
+
+An administrator may supply a complete locked library through `PASA_R_LIB`. It must match R 4.6.0, the locked package versions, operating system, and architecture. Do not copy Windows packages onto Linux or macOS. Set the variable to the prepared library path in the same shell used for verification and launch. In PowerShell:
+
+```powershell
+$env:PASA_R_LIB = 'C:\path\to\prepared-library'
+```
+
+On Linux or macOS:
+
+```sh
+export PASA_R_LIB="/path/to/prepared-library"
+```
+
+Skip `INSTALL_DEPENDENCIES.R` for this route: the installer does not use an external `PASA_R_LIB` and may attempt a package-local download. From the repository folder, run only:
+
+```sh
+Rscript --vanilla reproducibility/VERIFY_ENVIRONMENT.R
+Rscript --vanilla START_PASA.R
+```
+
+Verification and launch use the supplied library without installing packages. Launch only after verification succeeds.
+
+See [hosted deployment](HOSTED_DEPLOYMENT.md) for shinyapps.io and other Shiny services. The [release verification report](../RELEASE_VERIFICATION.md) states which platforms were actually tested.

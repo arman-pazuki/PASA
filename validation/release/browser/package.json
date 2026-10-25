@@ -1,0 +1,9 @@
+{
+  "name": "pasa-release-browser-check",
+  "private": true,
+  "version": "1.0.0",
+  "description": "Development-only browser smoke checks for the PASA release",
+  "devDependencies": {
+    "playwright": "1.62.1"
+  }
+}

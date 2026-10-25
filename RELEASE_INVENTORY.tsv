@@ -1,0 +1,86 @@
+path	bytes	component	license_scope
+.gitattributes	325	author-created software/configuration	MIT
+.github/workflows/release-checks.yml	7106	author-created software/configuration	MIT
+.gitignore	251	author-created software/configuration	MIT
+CHANGELOG.md	735	documentation, artwork, example or metadata	Author CC-BY-4.0 scope; see LICENSE.md
+CITATION.cff	1007	documentation, artwork, example or metadata	Author CC-BY-4.0 scope; see LICENSE.md
+dependencies/DEPENDENCY_LICENSE_INVENTORY.tsv	32850	documentation, artwork, example or metadata	Author CC-BY-4.0 scope; see LICENSE.md
+dependencies/README.md	631	documentation, artwork, example or metadata	Author CC-BY-4.0 scope; see LICENSE.md
+docs/ANALYSIS_OPTIONS_GUIDE.md	21042	documentation, artwork, example or metadata	Author CC-BY-4.0 scope; see LICENSE.md
+docs/assets/pasa-welcome-banner.png	541334	documentation, artwork, example or metadata	Author CC-BY-4.0 scope; see LICENSE.md
+docs/INTERFACE_GUIDE.md	10550	documentation, artwork, example or metadata	Author CC-BY-4.0 scope; see LICENSE.md
+docs/RECOVERY_EVIDENCE_SCOPE.md	654	documentation, artwork, example or metadata	Author CC-BY-4.0 scope; see LICENSE.md
+docs/CONTROLS_AND_RESULTS.md	5354	documentation, artwork, example or metadata	Author CC-BY-4.0 scope; see LICENSE.md
+docs/TROUBLESHOOTING.md	14006	documentation, artwork, example or metadata	Author CC-BY-4.0 scope; see LICENSE.md
+examples/EXAMPLE_SYNTHETIC_SPECTRA.xlsx	65800	documentation, artwork, example or metadata	Author CC-BY-4.0 scope; see LICENSE.md
+examples/EXPECTED_OUTPUTS.md	9358	documentation, artwork, example or metadata	Author CC-BY-4.0 scope; see LICENSE.md
+examples/QUICK_START.md	3882	documentation, artwork, example or metadata	Author CC-BY-4.0 scope; see LICENSE.md
+LICENSE.md	3444	documentation, artwork, example or metadata	Author CC-BY-4.0 scope; see LICENSE.md
+LICENSES/AUTHOR_CC_BY_4_0_NOTICE.md	1439	license reference	As stated in file
+LICENSES/CC-BY-4.0.txt	18657	license reference	As stated in file
+LICENSES/CC-BY-SA-4.0.txt	20138	license reference	As stated in file
+LICENSES/MIT.txt	1088	license reference	As stated in file
+privacy_network/DATA_FLOW.md	2443	documentation, artwork, example or metadata	Author CC-BY-4.0 scope; see LICENSE.md
+privacy_network/DATA_RETENTION_AND_EXPORTS.md	4744	documentation, artwork, example or metadata	Author CC-BY-4.0 scope; see LICENSE.md
+privacy_network/PRIVACY_AND_NETWORK_STATEMENT.md	8988	documentation, artwork, example or metadata	Author CC-BY-4.0 scope; see LICENSE.md
+privacy_network/README.md	1040	documentation, artwork, example or metadata	Author CC-BY-4.0 scope; see LICENSE.md
+privacy_network/URL_LOADING.md	2721	documentation, artwork, example or metadata	Author CC-BY-4.0 scope; see LICENSE.md
+README.md	3525	documentation, artwork, example or metadata	Author CC-BY-4.0 scope; see LICENSE.md
+RELEASE_VERIFICATION.md	1841	documentation, artwork, example or metadata	Author CC-BY-4.0 scope; see LICENSE.md
+reproducibility/BUILD_DEFAULTS_AND_LIMITS.R	31633	author-created software/configuration	MIT
+reproducibility/FREEZE_SOURCE_CHECKSUMS.R	2186	author-created software/configuration	MIT
+reproducibility/HOSTED_DEPLOYMENT.md	4123	documentation, artwork, example or metadata	Author CC-BY-4.0 scope; see LICENSE.md
+reproducibility/INSTALL_DEPENDENCIES.R	3888	author-created software/configuration	MIT
+reproducibility/INSTALLATION.md	2866	documentation, artwork, example or metadata	Author CC-BY-4.0 scope; see LICENSE.md
+reproducibility/LAUNCH_INSTRUCTIONS.md	751	documentation, artwork, example or metadata	Author CC-BY-4.0 scope; see LICENSE.md
+reproducibility/LAUNCH_PASA.ps1	2239	author-created software/configuration	MIT
+reproducibility/LOAD_LOCKED_ENVIRONMENT.R	6192	author-created software/configuration	MIT
+reproducibility/PASA_DEFAULTS_AND_LIMITS.tsv	40990	documentation, artwork, example or metadata	Author CC-BY-4.0 scope; see LICENSE.md
+reproducibility/R_PACKAGE_REQUIREMENTS.md	10437	documentation, artwork, example or metadata	Author CC-BY-4.0 scope; see LICENSE.md
+reproducibility/README.md	782	documentation, artwork, example or metadata	Author CC-BY-4.0 scope; see LICENSE.md
+reproducibility/renv.lock	24451	dependency metadata	Upstream notices
+reproducibility/RUN_PASA.R	2853	author-created software/configuration	MIT
+reproducibility/SHINY_MANIFEST.json	389992	documentation, artwork, example or metadata	Author CC-BY-4.0 scope; see LICENSE.md
+reproducibility/SOURCE_CHECKSUMS.tsv	4523	documentation, artwork, example or metadata	Author CC-BY-4.0 scope; see LICENSE.md
+reproducibility/VERIFY_ENVIRONMENT.R	6242	author-created software/configuration	MIT
+SECURITY.md	1207	documentation, artwork, example or metadata	Author CC-BY-4.0 scope; see LICENSE.md
+source_snapshot/app.R	3932	author-created software/configuration	MIT
+source_snapshot/data/CIE_1931_2deg_380_780_10nm.csv	1057	adapted CIE table	CC-BY-SA-4.0
+source_snapshot/data/CIE_D65_380_780_10nm.csv	450	adapted CIE table	CC-BY-SA-4.0
+source_snapshot/data/CIE_DATA_NOTICE.md	4493	documentation, artwork, example or metadata	Author CC-BY-4.0 scope; see LICENSE.md
+source_snapshot/deconvolution_module.R	75114	author-created software/configuration	MIT
+source_snapshot/PASA.R	1368943	author-created software/configuration	MIT
+source_snapshot/pasa_cuvettes.R	6897	author-created software/configuration	MIT
+source_snapshot/pasa_io.R	7226	author-created software/configuration	MIT
+source_snapshot/pasa_onboarding.R	9043	author-created software/configuration	MIT
+source_snapshot/pasa_shell.R	4817	author-created software/configuration	MIT
+source_snapshot/pasa_welcome.R	2287	author-created software/configuration	MIT
+source_snapshot/README_RELEASE.md	788	documentation, artwork, example or metadata	Author CC-BY-4.0 scope; see LICENSE.md
+source_snapshot/renv.lock	24451	dependency metadata	Upstream notices
+source_snapshot/www/pasa-cuvette-bench-light.png	1313587	documentation, artwork, example or metadata	Author CC-BY-4.0 scope; see LICENSE.md
+source_snapshot/www/pasa-cuvette-bench.png	1486554	documentation, artwork, example or metadata	Author CC-BY-4.0 scope; see LICENSE.md
+source_snapshot/www/pasa-cuvette-bench.rds	1768156	documentation, artwork, example or metadata	Author CC-BY-4.0 scope; see LICENSE.md
+source_snapshot/www/pasa-cuvette-photo-light.png	1393116	documentation, artwork, example or metadata	Author CC-BY-4.0 scope; see LICENSE.md
+source_snapshot/www/pasa-cuvette-photo-light.rds	3063548	documentation, artwork, example or metadata	Author CC-BY-4.0 scope; see LICENSE.md
+source_snapshot/www/pasa-cuvette-photo.png	1415163	documentation, artwork, example or metadata	Author CC-BY-4.0 scope; see LICENSE.md
+source_snapshot/www/pasa-cuvette-photo.rds	3363560	documentation, artwork, example or metadata	Author CC-BY-4.0 scope; see LICENSE.md
+source_snapshot/www/pasa-metrics-scroll.css	3425	author-created software/configuration	MIT
+source_snapshot/www/pasa-metrics-scroll.js	9486	author-created software/configuration	MIT
+source_snapshot/www/pasa-shell.css	18235	author-created software/configuration	MIT
+source_snapshot/www/pasa-shell.js	10508	author-created software/configuration	MIT
+source_snapshot/www/pasa-tour-details.js	50131	author-created software/configuration	MIT
+source_snapshot/www/pasa-tour-workspace.js	54509	author-created software/configuration	MIT
+source_snapshot/www/pasa-tour.css	4462	author-created software/configuration	MIT
+source_snapshot/www/pasa-tour.js	26382	author-created software/configuration	MIT
+source_snapshot/www/pasa-welcome-scene.svg	3155	documentation, artwork, example or metadata	Author CC-BY-4.0 scope; see LICENSE.md
+source_snapshot/www/pasa-welcome-scene.webp	91456	documentation, artwork, example or metadata	Author CC-BY-4.0 scope; see LICENSE.md
+source_snapshot/www/pasa-welcome.css	1435	author-created software/configuration	MIT
+source_snapshot/www/pasa-welcome.js	6145	author-created software/configuration	MIT
+source_snapshot/www/PASA_CUVETTE_ASSET.md	2002	documentation, artwork, example or metadata	Author CC-BY-4.0 scope; see LICENSE.md
+START_PASA.cmd	1076	author-created software/configuration	MIT
+START_PASA.R	602	author-created software/configuration	MIT
+THIRD_PARTY_NOTICES.md	2762	documentation, artwork, example or metadata	Author CC-BY-4.0 scope; see LICENSE.md
+validation/release/browser/package-lock.json	1761	dependency metadata	Upstream notices
+validation/release/browser/package.json	218	documentation, artwork, example or metadata	Author CC-BY-4.0 scope; see LICENSE.md
+validation/release/browser/smoke.cjs	8371	author-created software/configuration	MIT
+validation/release/SMOKE_RELEASE.R	23125	author-created software/configuration	MIT
